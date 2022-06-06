@@ -20,10 +20,14 @@ dependencies {
     implementation(Deps.Compose.material3)
     implementation(Deps.Compose.activity)
     implementation(Deps.Compose.toolsPreview)
+    implementation(Deps.Compose.koil)
     debugImplementation(Deps.Compose.tools)
 
     implementation(Deps.appCompat)
     implementation(Deps.coreKtx)
     implementation(Deps.material)
     implementation(Deps.Compose.navigation)
+
+    implementation(Deps.Network.retrofit)
+    implementation(Deps.Network.gson)
 }
