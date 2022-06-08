@@ -2,7 +2,7 @@ package tech.antee.second.data.mock_data
 
 import tech.antee.second.data.models.ProductDto
 
-val mockProductDetailsList = listOf(
+var mockProductDetailsList = mutableListOf(
     ProductDto(
         additionalParams = mapOf(),
         availableCount = 10,
@@ -17,7 +17,8 @@ val mockProductDetailsList = listOf(
         name = "Борщ по-домашнему",
         price = "199",
         rating = 4.6,
-        weight = 0.4
+        weight = 0.4,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(
@@ -35,7 +36,8 @@ val mockProductDetailsList = listOf(
         name = "Ваш любимый Сальчичон",
         price = "79",
         rating = 5.0,
-        weight = 0.2
+        weight = 0.2,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(),
@@ -51,7 +53,8 @@ val mockProductDetailsList = listOf(
         name = "Бельгийская смесь \"Мираторг\"",
         price = "149",
         rating = 3.2,
-        weight = null
+        weight = null,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(),
@@ -67,7 +70,8 @@ val mockProductDetailsList = listOf(
         name = "Джем Ozon Express",
         price = "1390",
         rating = 4.6,
-        weight = 0.15
+        weight = 0.15,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(),
@@ -83,7 +87,8 @@ val mockProductDetailsList = listOf(
         name = "Мармелад клюква с ягелем",
         price = "319",
         rating = 2.8,
-        weight = 1.2
+        weight = 1.2,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(),
@@ -99,7 +104,8 @@ val mockProductDetailsList = listOf(
         name = "Авокадо Хасс",
         price = "600",
         rating = 4.5,
-        weight = null
+        weight = null,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(
@@ -119,7 +125,8 @@ val mockProductDetailsList = listOf(
         name = "Молоко",
         price = "65",
         rating = 5.0,
-        weight = 1.0
+        weight = 1.0,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(),
@@ -136,7 +143,8 @@ val mockProductDetailsList = listOf(
         name = "Мороженое сорбет",
         price = "110",
         rating = 4.0,
-        weight = 0.23
+        weight = 0.23,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(
@@ -157,7 +165,8 @@ val mockProductDetailsList = listOf(
         name = "Сырок творожный",
         price = "23",
         rating = 5.0,
-        weight = 0.05
+        weight = 0.05,
+        viewCount = 0
     ),
     ProductDto(
         additionalParams = mapOf(
@@ -178,6 +187,7 @@ val mockProductDetailsList = listOf(
         name = "Блинчики домашние",
         price = "189",
         rating = 3.0,
-        weight = 0.22
+        weight = 0.22,
+        viewCount = 0
     )
 )

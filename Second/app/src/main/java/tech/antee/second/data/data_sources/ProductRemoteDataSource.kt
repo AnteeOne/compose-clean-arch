@@ -8,4 +8,6 @@ interface ProductRemoteDataSource {
     suspend fun fetchProductList(): List<ProductInListDto>
 
     suspend fun fetchProductDetails(guid: String): ProductDto
+
+    suspend fun putProductDetails(productDto: ProductDto): ProductDto
 }

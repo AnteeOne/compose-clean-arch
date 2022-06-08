@@ -18,7 +18,8 @@ class ProductDtoToModelMapper {
             weight,
             count,
             availableCount,
-            additionalParams
+            additionalParams,
+            viewCount
         )
     }
 }

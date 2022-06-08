@@ -30,7 +30,8 @@ class ProductRepositoryImpl(
     override suspend fun getProductDetails(guid: String): Result<Product> {
         return try {
             val dto = remoteProductDataSource.fetchProductDetails(guid)
-            Result.Success(productDtoToModelMapper.map(dto))
+            val updatedDto = remoteProductDataSource.putProductDetails(dto.copy(viewCount = dto.viewCount + 1))
+            Result.Success(productDtoToModelMapper.map(updatedDto))
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t

@@ -26,7 +26,7 @@ fun ProductListItemComponent(
     ) {
         Row {
             AsyncImage(
-                modifier = Modifier.height(64.dp),
+                modifier = Modifier.height(64.dp), // TODO: remove hardcode dp values
                 model = image,
                 contentDescription = null
             )

@@ -5,6 +5,7 @@ sealed class Destination(
 ) {
     object ProductListDestination : Destination(route = "product_list")
     object Product : Destination(route = "product/{productId}") {
+        val productIdArgument = "productId"
         fun buildRoute(guid: String) = "product/$guid"
     }
 }

@@ -18,7 +18,8 @@ class ProductModelToItemMapper {
             weight,
             count,
             availableCount,
-            additionalParams
+            additionalParams,
+            viewCount
         )
     }
 }

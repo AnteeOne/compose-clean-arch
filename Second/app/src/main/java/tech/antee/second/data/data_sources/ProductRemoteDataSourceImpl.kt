@@ -18,4 +18,12 @@ class ProductRemoteDataSourceImpl : ProductRemoteDataSource {
         delay(2000)
         return mockProductDetailsList.firstOrNull { it.guid == guid } ?: productNotFoundError(guid)
     }
+
+    override suspend fun putProductDetails(productDto: ProductDto): ProductDto {
+        mockProductDetailsList = mockProductDetailsList.map {
+            if (it.guid == productDto.guid) productDto else it
+        }.toMutableList()
+        return mockProductDetailsList.firstOrNull { it.guid == productDto.guid }
+            ?: productNotFoundError(productDto.guid)
+    }
 }
