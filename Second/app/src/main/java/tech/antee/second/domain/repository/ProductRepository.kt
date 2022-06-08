@@ -9,4 +9,6 @@ interface ProductRepository {
     suspend fun getProductList(): Result<List<ProductInList>>
 
     suspend fun getProductDetails(guid: String): Result<Product>
+
+    suspend fun addProduct(product: Product)
 }

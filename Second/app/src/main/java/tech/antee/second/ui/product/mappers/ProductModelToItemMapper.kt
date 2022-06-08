@@ -22,4 +22,22 @@ class ProductModelToItemMapper {
             viewCount
         )
     }
+
+    fun mapBack(from: ProductItem) = with(from) {
+        Product(
+            guid,
+            name,
+            price,
+            description,
+            rating,
+            isFavorite,
+            isInCart,
+            images,
+            weight,
+            count,
+            availableCount,
+            additionalParams,
+            viewCount
+        )
+    }
 }

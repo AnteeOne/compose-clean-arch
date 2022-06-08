@@ -22,4 +22,22 @@ class ProductDtoToModelMapper {
             viewCount
         )
     }
+
+    fun mapBack(from: Product): ProductDto = with(from) {
+        ProductDto(
+            guid,
+            name,
+            price,
+            description,
+            rating,
+            isFavorite,
+            isInCart,
+            images,
+            weight,
+            count,
+            availableCount,
+            additionalParams,
+            viewCount
+        )
+    }
 }
