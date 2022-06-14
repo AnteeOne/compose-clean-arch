@@ -9,5 +9,9 @@ interface ProductRemoteDataSource {
 
     suspend fun fetchProductDetails(guid: String): ProductDto
 
+    suspend fun addProductDetails(productDto: ProductDto)
+
+    suspend fun addProductInList(productInListDto: ProductInListDto)
+
     suspend fun putProductDetails(productDto: ProductDto): ProductDto
 }

@@ -2,18 +2,19 @@ package tech.antee.second.ui.product_list
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import tech.antee.second.ui.navigation.Destination
@@ -33,10 +34,12 @@ fun ProductListScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        viewModel.fetchProductList()
         viewModel.events.collect {
             when (it) {
                 is ProductListEvent.ShowError -> onError(it.t, context)
                 is ProductListEvent.NavigateToDetails -> navController.navigate(Destination.Product.buildRoute(it.guid))
+                is ProductListEvent.NavigateToProductAdding -> navController.navigate(Destination.ProductAdding.route)
             }
         }
     }
@@ -53,12 +56,20 @@ fun ProductListScreen(
             is ProductListUiState.Empty -> {}
             is ProductListUiState.Loading -> CircularProgressIndicator(modifier.align(Alignment.Center))
             is ProductListUiState.Success -> {
-                LazyColumn {
-                    items(state.data) {
-                        ProductListItemComponent(
-                            item = it,
-                            onClick = { viewModel.onAction(ProductListAction.OnDeviceClick(it.guid)) }
-                        )
+                Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
+                    LazyColumn(modifier = Modifier.weight(1f)) {
+                        items(state.data) {
+                            ProductListItemComponent(
+                                item = it,
+                                onClick = { viewModel.onAction(ProductListAction.OnDeviceClick(it.guid)) }
+                            )
+                        }
+                    }
+                    Button(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { viewModel.onAction(ProductListAction.OnAddProductButtonClick) }
+                    ) {
+                        Text(text = "Add product", color = Color.White) // TODO: to strings
                     }
                 }
             }

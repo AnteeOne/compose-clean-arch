@@ -19,6 +19,14 @@ class ProductRemoteDataSourceImpl : ProductRemoteDataSource {
         return mockProductDetailsList.firstOrNull { it.guid == guid } ?: productNotFoundError(guid)
     }
 
+    override suspend fun addProductDetails(productDto: ProductDto) {
+        mockProductDetailsList.add(productDto)
+    }
+
+    override suspend fun addProductInList(productInListDto: ProductInListDto) {
+        mockProductList.add(productInListDto)
+    }
+
     override suspend fun putProductDetails(productDto: ProductDto): ProductDto {
         mockProductDetailsList = mockProductDetailsList.map {
             if (it.guid == productDto.guid) productDto else it

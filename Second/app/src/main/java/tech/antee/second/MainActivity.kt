@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import tech.antee.second.ui.mock_di.UiContainer
 import tech.antee.second.ui.navigation.Destination
 import tech.antee.second.ui.product.ProductScreen
+import tech.antee.second.ui.product_adding.ProductAddingScreen
 import tech.antee.second.ui.product_list.ProductListScreen
 import tech.antee.second.ui.theme.SecondTheme
 
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             SecondTheme {
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = Destination.ProductListDestination.route) {
+                NavHost(navController = navController, startDestination = Destination.ProductList.route) {
                     composable(
                         route = Destination.Product.route,
                         arguments = listOf(
@@ -35,10 +36,16 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     composable(
-                        route = Destination.ProductListDestination.route,
+                        route = Destination.ProductList.route,
                     ) {
                         val viewModel = UiContainer.productListViewModel
                         ProductListScreen(viewModel = viewModel, navController = navController)
+                    }
+                    composable(
+                        route = Destination.ProductAdding.route
+                    ) {
+                        val viewModel = UiContainer.productAddingViewModel
+                        ProductAddingScreen(viewModel = viewModel, navController = navController)
                     }
                 }
             }

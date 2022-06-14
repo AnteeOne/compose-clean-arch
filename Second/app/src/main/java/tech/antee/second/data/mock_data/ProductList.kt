@@ -2,7 +2,7 @@ package tech.antee.second.data.mock_data
 
 import tech.antee.second.data.models.ProductInListDto
 
-val mockProductList = listOf(
+val mockProductList = mutableListOf(
     ProductInListDto(
         guid = "b5f5852b-3b8c-4857-9f53-ac5c2b6a3b2f",
         image = "https://cdn1.ozone.ru/s3/multimedia-j/6131838211.jpg",
