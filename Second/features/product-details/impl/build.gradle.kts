@@ -1,21 +1,11 @@
 plugins {
-    id(Plugins.androidApplication)
+    id(Plugins.androidLibrary)
     id(Plugins.androidBase)
     id(Plugins.compose)
     id(Plugins.kotlinKapt)
 }
 
-android {
-    defaultConfig {
-        applicationId = AppConfig.applicationId
-        versionCode = AppConfig.versionCode
-        versionName = AppConfig.versionName
-    }
-}
-
 dependencies {
-    projectImplementation(Modules.coreComposeFeatures)
-
     implementation(Deps.Compose.ui)
     implementation(Deps.Compose.foundation)
     implementation(Deps.Compose.material)
@@ -29,7 +19,4 @@ dependencies {
     implementation(Deps.coreKtx)
     implementation(Deps.material)
     implementation(Deps.Compose.navigation)
-
-    implementation(Deps.Network.retrofit)
-    implementation(Deps.Network.gson)
 }
