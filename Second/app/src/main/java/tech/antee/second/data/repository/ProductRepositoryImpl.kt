@@ -2,6 +2,7 @@ package tech.antee.second.data.repository
 
 import kotlinx.coroutines.CancellationException
 import tech.antee.second.data.data_sources.ProductRemoteDataSource
+import tech.antee.second.data.mappers.ProductDetailsToListDtoMapper
 import tech.antee.second.data.mappers.ProductDtoToModelMapper
 import tech.antee.second.data.mappers.ProductListDtoToModelMapper
 import tech.antee.second.data.models.Result
@@ -12,7 +13,8 @@ import tech.antee.second.domain.repository.ProductRepository
 class ProductRepositoryImpl(
     private val remoteProductDataSource: ProductRemoteDataSource,
     private val productListDtoToModelMapper: ProductListDtoToModelMapper,
-    private val productDtoToModelMapper: ProductDtoToModelMapper
+    private val productDtoToModelMapper: ProductDtoToModelMapper,
+    private val productDetailsToListDtoMapper: ProductDetailsToListDtoMapper
 ) : ProductRepository {
 
     override suspend fun getProductList(): Result<List<ProductInList>> {
@@ -38,5 +40,11 @@ class ProductRepositoryImpl(
                 else -> Result.Error(t)
             }
         }
+    }
+
+    override suspend fun addProduct(product: Product) {
+        val productDto = productDtoToModelMapper.mapBack(product)
+        remoteProductDataSource.addProductDetails(productDto)
+        remoteProductDataSource.addProductInList(productDetailsToListDtoMapper.map(productDto))
     }
 }

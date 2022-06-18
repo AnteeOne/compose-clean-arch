@@ -1,5 +1,6 @@
 package tech.antee.second.ui.product_list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
@@ -24,25 +25,19 @@ class ProductListViewModel(
     private var _uiState: MutableStateFlow<ProductListUiState> = MutableStateFlow(ProductListUiState.Empty)
     val uiState: StateFlow<ProductListUiState> = _uiState.asStateFlow()
 
-    init {
-        fetchProductList()
-    }
-
     fun onAction(action: ProductListAction) {
         when (action) {
             is ProductListAction.OnDeviceClick -> navigateToDetails(action.guid)
+            is ProductListAction.OnAddProductButtonClick -> _events.trySend(ProductListEvent.NavigateToProductAdding)
         }
     }
 
-    private fun fetchProductList() {
+    fun fetchProductList() {
         viewModelScope.launch {
             _uiState.value = ProductListUiState.Loading
             when (val result = getProductListUsecase()) {
                 is Result.Error -> _events.trySend(ProductListEvent.ShowError(result.t))
-                is Result.Success -> {
-                    val resultItems = result.data.map { mapper.map(it) }
-                    _uiState.value = ProductListUiState.Success(resultItems)
-                }
+                is Result.Success -> _uiState.value = ProductListUiState.Success(result.data.map { mapper.map(it) })
             }
         }
     }
