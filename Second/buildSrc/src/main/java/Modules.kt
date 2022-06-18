@@ -1,8 +1,9 @@
 object Modules {
     const val app = ":app"
 
-    const val utilsTheme = "utils:theme"
+    const val utilsTheme = ":utils:theme"
 
+    const val coreDomain = ":core:domain"
     const val coreData = ":core:data"
     const val coreComposeFeatures = ":core:compose-features"
 

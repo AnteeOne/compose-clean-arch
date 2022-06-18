@@ -14,7 +14,14 @@ android {
 }
 
 dependencies {
+    projectImplementation(Modules.utilsTheme)
+    projectImplementation(Modules.coreDomain)
+    projectImplementation(Modules.coreData)
     projectImplementation(Modules.coreComposeFeatures)
+
+    projectImplementation(Modules.featureProductListImpl)
+    projectImplementation(Modules.featureProductDetailsImpl)
+    projectImplementation(Modules.featureProductAddingImpl)
 
     implementation(Deps.Compose.ui)
     implementation(Deps.Compose.foundation)
@@ -22,7 +29,6 @@ dependencies {
     implementation(Deps.Compose.material3)
     implementation(Deps.Compose.activity)
     implementation(Deps.Compose.toolsPreview)
-    implementation(Deps.Compose.koil)
     debugImplementation(Deps.Compose.tools)
 
     implementation(Deps.appCompat)

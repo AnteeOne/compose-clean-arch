@@ -38,5 +38,4 @@ private fun DependencyHandler.project(
 )
 
 @Suppress("unchecked_cast", "nothing_to_inline")
-private inline fun <T> uncheckedCast(obj: Any?): T =
-    obj as T
+private inline fun <T> uncheckedCast(obj: Any?): T = obj as T

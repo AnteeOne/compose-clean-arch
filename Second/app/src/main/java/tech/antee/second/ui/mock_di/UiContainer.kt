@@ -1,14 +1,15 @@
 package tech.antee.second.ui.mock_di
 
 import tech.antee.second.data.mock_di.DataContainer.productRepository
-import tech.antee.second.domain.usecases.AddProductUsecase
-import tech.antee.second.domain.usecases.GetProductListUsecase
-import tech.antee.second.domain.usecases.GetProductUsecase
-import tech.antee.second.ui.product.ProductViewModel
-import tech.antee.second.ui.product.mappers.ProductModelToItemMapper
-import tech.antee.second.ui.product_adding.ProductAddingViewModel
-import tech.antee.second.ui.product_list.ProductListViewModel
-import tech.antee.second.ui.product_list.mappers.ProductListModelToItemMapper
+import tech.antee.second.product_adding.impl.domain.usecases.AddProductUsecase
+import tech.antee.second.product_adding.impl.ui.ProductAddingViewModel
+import tech.antee.second.product_adding.impl.ui.mappers.ProductAddingModelToItemMapper
+import tech.antee.second.product_details.impl.domain.GetProductUsecase
+import tech.antee.second.product_details.impl.ui.ProductViewModel
+import tech.antee.second.product_details.impl.ui.mappers.ProductModelToItemMapper
+import tech.antee.second.product_list.impl.domain.usecases.GetProductListUsecase
+import tech.antee.second.product_list.impl.ui.ProductListViewModel
+import tech.antee.second.product_list.impl.ui.mappers.ProductListModelToItemMapper
 
 object UiContainer {
 
@@ -26,6 +27,10 @@ object UiContainer {
 
     val productModelToItemMapper: ProductModelToItemMapper by lazy {
         ProductModelToItemMapper()
+    }
+
+    val productAddingModelToItemMapper: ProductAddingModelToItemMapper by lazy {
+        ProductAddingModelToItemMapper()
     }
 
     val productListModelToItemMapper: ProductListModelToItemMapper by lazy {
@@ -49,7 +54,7 @@ object UiContainer {
     val productAddingViewModel: ProductAddingViewModel by lazy {
         ProductAddingViewModel(
             addProductUsecase = addProductUsecase,
-            productModelToItemMapper = productModelToItemMapper
+            productModelToItemMapper = productAddingModelToItemMapper
         )
     }
 }

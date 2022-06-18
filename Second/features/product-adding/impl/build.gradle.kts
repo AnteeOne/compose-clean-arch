@@ -6,6 +6,10 @@ plugins {
 }
 
 dependencies {
+    projectImplementation(Modules.utilsTheme)
+    projectImplementation(Modules.coreDomain)
+    projectImplementation(Modules.coreData)
+
     implementation(Deps.Compose.ui)
     implementation(Deps.Compose.foundation)
     implementation(Deps.Compose.material)

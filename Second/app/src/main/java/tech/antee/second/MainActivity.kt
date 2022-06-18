@@ -8,12 +8,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import tech.antee.second.product_adding.impl.ui.ProductAddingScreen
+import tech.antee.second.product_details.impl.ui.ProductScreen
+import tech.antee.second.product_list.impl.ui.ProductListScreen
+import tech.antee.second.theme.SecondTheme
 import tech.antee.second.ui.mock_di.UiContainer
 import tech.antee.second.ui.navigation.Destination
-import tech.antee.second.ui.product.ProductScreen
-import tech.antee.second.ui.product_adding.ProductAddingScreen
-import tech.antee.second.ui.product_list.ProductListScreen
-import tech.antee.second.ui.theme.SecondTheme
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,14 +32,21 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val viewModel = UiContainer.productViewModel
                         it.arguments?.getString(Destination.Product.productIdArgument)?.let { guid ->
-                            ProductScreen(viewModel = viewModel, productGuid = guid)
+                            ProductScreen(
+                                viewModel = viewModel,
+                                productGuid = guid
+                            )
                         }
                     }
                     composable(
                         route = Destination.ProductList.route,
                     ) {
                         val viewModel = UiContainer.productListViewModel
-                        ProductListScreen(viewModel = viewModel, navController = navController)
+                        ProductListScreen(
+                            viewModel = viewModel,
+                            onDetailsClick = { navController.navigate(Destination.Product.buildRoute(it)) },
+                            onProductAddingButtonClick = { navController.navigate(Destination.ProductAdding.route) }
+                        )
                     }
                     composable(
                         route = Destination.ProductAdding.route
