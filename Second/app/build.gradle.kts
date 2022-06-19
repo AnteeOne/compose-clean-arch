@@ -19,6 +19,7 @@ dependencies {
     projectImplementation(Modules.coreData)
     projectImplementation(Modules.coreDi)
     projectImplementation(Modules.coreComposeFeatures)
+    projectImplementation(Modules.coreNavigation)
 
     projectImplementation(Modules.featureProductListImpl)
     projectImplementation(Modules.featureProductDetailsImpl)
