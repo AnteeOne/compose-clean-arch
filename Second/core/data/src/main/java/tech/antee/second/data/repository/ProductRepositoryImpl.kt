@@ -8,9 +8,10 @@ import tech.antee.second.domain.models.Output
 import tech.antee.second.domain.models.Product
 import tech.antee.second.domain.models.ProductInList
 import tech.antee.second.domain.repositories.ProductRepository
+import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-class ProductRepositoryImpl(
+class ProductRepositoryImpl @Inject constructor(
     private val remoteProductDataSource: ProductRemoteDataSource,
     private val productListDtoToModelMapper: ProductListDtoToModelMapper,
     private val productDtoToModelMapper: ProductDtoToModelMapper,

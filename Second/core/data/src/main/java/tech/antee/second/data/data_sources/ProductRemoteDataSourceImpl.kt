@@ -5,8 +5,9 @@ import tech.antee.second.data.mock_data.mockProductDetailsList
 import tech.antee.second.data.mock_data.mockProductList
 import tech.antee.second.data.models.ProductDto
 import tech.antee.second.data.models.ProductInListDto
+import javax.inject.Inject
 
-class ProductRemoteDataSourceImpl : ProductRemoteDataSource {
+class ProductRemoteDataSourceImpl @Inject constructor() : ProductRemoteDataSource {
 
     override suspend fun fetchProductList(): List<ProductInListDto> {
         return mockProductList

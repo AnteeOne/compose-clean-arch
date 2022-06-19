@@ -9,7 +9,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavController
 import tech.antee.second.product_adding.impl.ui.models.ProductAddingAction
 import tech.antee.second.product_adding.impl.ui.models.ProductAddingEvent
 import tech.antee.second.theme.Dimensions
@@ -17,13 +16,13 @@ import tech.antee.second.theme.Dimensions
 @Composable
 fun ProductAddingScreen(
     viewModel: ProductAddingViewModel,
-    navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigateBack: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         viewModel.events.collect {
             when (it) {
-                ProductAddingEvent.NavigateBack -> navController.popBackStack()
+                ProductAddingEvent.NavigateBack -> onNavigateBack()
             }
         }
     }

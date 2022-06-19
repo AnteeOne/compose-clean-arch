@@ -5,6 +5,8 @@ plugins {
 }
 
 dependencies {
+    projectImplementation(Modules.coreComposeFeatures)
+
     implementation(Deps.Compose.ui)
     implementation(Deps.Compose.foundation)
     implementation(Deps.Compose.toolsPreview)

@@ -7,14 +7,17 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import tech.antee.second.domain.models.Output
+import tech.antee.second.product_details.impl.domain.GetProductUsecase
 import tech.antee.second.product_details.impl.ui.mappers.ProductModelToItemMapper
 import tech.antee.second.product_details.impl.ui.models.ProductEvent
 import tech.antee.second.product_details.impl.ui.models.ProductUiState
+import javax.inject.Inject
 
-class ProductViewModel(
-    private val getProductUsecase: tech.antee.second.product_details.impl.domain.GetProductUsecase,
-    private val mapper: ProductModelToItemMapper
+class ProductViewModel @Inject constructor(
+    private val getProductUsecase: GetProductUsecase
 ) : ViewModel() {
+
+    private val mapper by lazy { ProductModelToItemMapper() } // TODO: PROVIDE BY DI
 
     private val _events = Channel<ProductEvent>(capacity = Channel.UNLIMITED)
     val events: Flow<ProductEvent> = _events.receiveAsFlow()

@@ -13,11 +13,13 @@ import tech.antee.second.product_adding.impl.ui.mappers.ProductAddingModelToItem
 import tech.antee.second.product_adding.impl.ui.models.ProductAddingAction
 import tech.antee.second.product_adding.impl.ui.models.ProductAddingEvent
 import tech.antee.second.product_adding.impl.ui.models.ProductAddingItem
+import javax.inject.Inject
 
-class ProductAddingViewModel(
+class ProductAddingViewModel @Inject constructor(
     private val addProductUsecase: AddProductUsecase,
-    private val productModelToItemMapper: ProductAddingModelToItemMapper
 ) : ViewModel() {
+
+    private val productModelToItemMapper by lazy { ProductAddingModelToItemMapper() } // TODO: PROVIDE BY DI
 
     private var _events = Channel<ProductAddingEvent>(capacity = Channel.UNLIMITED)
     val events: Flow<ProductAddingEvent> = _events.receiveAsFlow()

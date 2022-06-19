@@ -5,6 +5,7 @@ object Modules {
 
     const val coreDomain = ":core:domain"
     const val coreData = ":core:data"
+    const val coreDi = ":core:di"
     const val coreComposeFeatures = ":core:compose-features"
 
     const val featureProductListApi = ":features:product-list:api"

@@ -12,11 +12,13 @@ import tech.antee.second.product_list.impl.ui.mappers.ProductListModelToItemMapp
 import tech.antee.second.product_list.impl.ui.models.ProductListAction
 import tech.antee.second.product_list.impl.ui.models.ProductListEvent
 import tech.antee.second.product_list.impl.ui.models.ProductListUiState
+import javax.inject.Inject
 
-class ProductListViewModel(
+class ProductListViewModel @Inject constructor(
     private val getProductListUsecase: GetProductListUsecase,
-    private val mapper: ProductListModelToItemMapper
 ) : ViewModel() {
+
+    private val mapper by lazy { ProductListModelToItemMapper() } // TODO : PROVIDE BY DI
 
     private var _events = Channel<ProductListEvent>(capacity = UNLIMITED)
     val events: Flow<ProductListEvent> = _events.receiveAsFlow()

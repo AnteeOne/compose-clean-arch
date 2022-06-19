@@ -17,9 +17,19 @@ interface Feature {
 
     val featureRoute: String
 
+    /**
+     * Override this value if you need arguments for your feature
+     *
+     * @see [NamedNavArgument]
+     */
     val arguments: List<NamedNavArgument>
         get() = emptyList()
 
+    /**
+     * Override this value if you need in links for your feature
+     *
+     * @see [NavDeepLink]
+     */
     val deepLinks: List<NavDeepLink>
         get() = emptyList()
 }
