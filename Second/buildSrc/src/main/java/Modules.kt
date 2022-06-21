@@ -7,6 +7,7 @@ object Modules {
     const val coreData = ":core:data"
     const val coreDi = ":core:di"
     const val coreComposeFeatures = ":core:compose-features"
+    const val coreNavigation = ":core:navigation"
 
     const val featureProductListApi = ":features:product-list:api"
     const val featureProductListImpl = ":features:product-list:impl"

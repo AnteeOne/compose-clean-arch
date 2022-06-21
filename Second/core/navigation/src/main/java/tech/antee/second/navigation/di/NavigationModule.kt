@@ -1,4 +1,4 @@
-package tech.antee.second.di
+package tech.antee.second.navigation.di
 
 import dagger.Module
 import tech.antee.second.product_adding.impl.di.ProductAddingFeatureModule
