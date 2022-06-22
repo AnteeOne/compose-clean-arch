@@ -6,7 +6,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import tech.antee.second.domain.models.Output
 import tech.antee.second.product_list.impl.domain.usecases.GetProductListUsecase
 import tech.antee.second.product_list.impl.ui.mappers.ProductListModelToItemMapper
 import tech.antee.second.product_list.impl.ui.models.ProductListAction
@@ -36,9 +35,8 @@ class ProductListViewModel @Inject constructor(
     fun fetchProductList() {
         viewModelScope.launch {
             _uiState.value = ProductListUiState.Loading
-            when (val result = getProductListUsecase()) {
-                is Output.Error -> _events.trySend(ProductListEvent.ShowError(result.t))
-                is Output.Success -> _uiState.value = ProductListUiState.Success(result.data.map { mapper.map(it) })
+            getProductListUsecase.invoke().collect {
+                _uiState.value = ProductListUiState.Success(it.map(mapper::map))
             }
         }
     }

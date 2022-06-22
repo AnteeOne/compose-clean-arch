@@ -77,5 +77,6 @@ fun ProductListScreen(
 }
 
 private fun onError(t: Throwable, context: Context) {
+    t.printStackTrace()
     Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show()
 }

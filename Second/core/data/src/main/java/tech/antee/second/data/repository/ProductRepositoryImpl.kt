@@ -1,27 +1,55 @@
 package tech.antee.second.data.repository
 
-import tech.antee.second.data.data_sources.ProductRemoteDataSource
-import tech.antee.second.data.mappers.ProductDetailsToListDtoMapper
-import tech.antee.second.data.mappers.ProductDtoToModelMapper
-import tech.antee.second.data.mappers.ProductListDtoToModelMapper
-import tech.antee.second.domain.models.Output
-import tech.antee.second.domain.models.Product
-import tech.antee.second.domain.models.ProductInList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import tech.antee.second.data.local.data_sources.ProductLocalDataSource
+import tech.antee.second.data.local.mappers.ProductDetailsToListEntityMapper
+import tech.antee.second.data.local.mappers.ProductEntityToModelMapper
+import tech.antee.second.data.local.mappers.ProductListEntityToModelMapper
+import tech.antee.second.data.mappers.ProductDtoToEntityMapper
+import tech.antee.second.data.mappers.ProductListDtoToEntityMapper
+import tech.antee.second.data.network.data_sources.ProductRemoteDataSource
+import tech.antee.second.domain.models.*
 import tech.antee.second.domain.repositories.ProductRepository
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 class ProductRepositoryImpl @Inject constructor(
     private val remoteProductDataSource: ProductRemoteDataSource,
-    private val productListDtoToModelMapper: ProductListDtoToModelMapper,
-    private val productDtoToModelMapper: ProductDtoToModelMapper,
-    private val productDetailsToListDtoMapper: ProductDetailsToListDtoMapper
+    private val localProductDataSource: ProductLocalDataSource,
+    private val productListEntityToModelMapper: ProductListEntityToModelMapper,
+    private val productEntityToModelMapper: ProductEntityToModelMapper,
+    private val productDetailsToListEntityMapper: ProductDetailsToListEntityMapper,
+    private val productListDtoToEntityMapper: ProductListDtoToEntityMapper,
+    private val productDtoToEntityMapper: ProductDtoToEntityMapper
 ) : ProductRepository {
 
-    override suspend fun getProductList(): Output<List<ProductInList>> {
+    override val deviceListFlow: Flow<List<ProductInList>>
+        get() = localProductDataSource.productInListEntityFlow
+            .map { entityList ->
+                entityList.map { entity -> productListEntityToModelMapper.map(entity) }
+            }
+
+    override suspend fun fetchProductList(): EmptyOutput {
         return try {
             val dtoList = remoteProductDataSource.fetchProductList()
-            return Output.Success(dtoList.map { productListDtoToModelMapper.map(it) })
+            val entityList = dtoList.map(productListDtoToEntityMapper::map)
+            localProductDataSource.putProductsInList(entityList)
+            EmptySuccess
+        } catch (t: Throwable) {
+            when (t) {
+                is CancellationException -> throw t
+                else -> Output.Error(t)
+            }
+        }
+    }
+
+    override suspend fun fetchProductDetails(): EmptyOutput {
+        return try {
+            val dtoList = remoteProductDataSource.fetchProductDetailsList()
+            val entityList = dtoList.map(productDtoToEntityMapper::map)
+            localProductDataSource.putProducts(entityList)
+            EmptySuccess
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t
@@ -32,9 +60,9 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun getProductDetails(guid: String): Output<Product> {
         return try {
-            val dto = remoteProductDataSource.fetchProductDetails(guid)
-            val updatedDto = remoteProductDataSource.putProductDetails(dto.copy(viewCount = dto.viewCount + 1))
-            Output.Success(productDtoToModelMapper.map(updatedDto))
+            val entity = localProductDataSource.getProductDetails(guid)
+            val updatedEntity = localProductDataSource.putProductDetails(entity!!.copy(viewCount = entity.viewCount + 1))
+            Output.Success(productEntityToModelMapper.map(updatedEntity!!)) //TODO: wrap with null check
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t
@@ -44,8 +72,10 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addProduct(product: Product) {
-        val productDto = productDtoToModelMapper.mapBack(product)
-        remoteProductDataSource.addProductDetails(productDto)
-        remoteProductDataSource.addProductInList(productDetailsToListDtoMapper.map(productDto))
+        val productEntity = productEntityToModelMapper.mapBack(product)
+        localProductDataSource.apply {
+            addProductDetails(productEntity)
+            addProductInList(productDetailsToListEntityMapper.map(productEntity))
+        }
     }
 }

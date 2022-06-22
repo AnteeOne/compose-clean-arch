@@ -1,7 +1,7 @@
-package tech.antee.second.data.mappers
+package tech.antee.second.data.network.mappers
 
-import tech.antee.second.data.models.ProductDto
-import tech.antee.second.data.models.ProductInListDto
+import tech.antee.second.data.network.models.ProductDto
+import tech.antee.second.data.network.models.ProductInListDto
 
 class ProductDetailsToListDtoMapper {
 

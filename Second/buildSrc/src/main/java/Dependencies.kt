@@ -92,6 +92,7 @@ object Deps {
     }
 
     object Coroutines {
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutine}"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutine}"
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidxLifecycle}"
     }
@@ -109,5 +110,9 @@ object Deps {
     object Network {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         const val gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+    }
+
+    object LocalData {
+
     }
 }

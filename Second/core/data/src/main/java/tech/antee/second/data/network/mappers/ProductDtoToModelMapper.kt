@@ -1,9 +1,11 @@
-package tech.antee.second.data.mappers
+package tech.antee.second.data.network.mappers
 
-import tech.antee.second.data.models.ProductDto
+import tech.antee.second.data.network.models.ProductDto
 import tech.antee.second.domain.models.Product
 
 class ProductDtoToModelMapper {
+
+    private val DEFAULT_VIEW_COUNT = 0
 
     fun map(from: ProductDto): Product = with(from) {
         Product(
@@ -19,7 +21,7 @@ class ProductDtoToModelMapper {
             count,
             availableCount,
             additionalParams,
-            viewCount
+            DEFAULT_VIEW_COUNT
         )
     }
 
@@ -36,8 +38,7 @@ class ProductDtoToModelMapper {
             weight,
             count,
             availableCount,
-            additionalParams,
-            viewCount
+            additionalParams
         )
     }
 }
