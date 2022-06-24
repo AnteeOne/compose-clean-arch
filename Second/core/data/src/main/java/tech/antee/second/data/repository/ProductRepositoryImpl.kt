@@ -24,7 +24,7 @@ class ProductRepositoryImpl @Inject constructor(
     private val productDtoToEntityMapper: ProductDtoToEntityMapper
 ) : ProductRepository {
 
-    override val deviceListFlow: Flow<List<ProductInList>>
+    override val deviceListFlow: Flow<List<ProductInList>> // TODO: return floe
         get() = localProductDataSource.productInListEntityFlow
             .map { entityList ->
                 entityList.map { entity -> productListEntityToModelMapper.map(entity) }
@@ -61,8 +61,9 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getProductDetails(guid: String): Output<Product> {
         return try {
             val entity = localProductDataSource.getProductDetails(guid)
-            val updatedEntity = localProductDataSource.putProductDetails(entity!!.copy(viewCount = entity.viewCount + 1))
-            Output.Success(productEntityToModelMapper.map(updatedEntity!!)) //TODO: wrap with null check
+            val updatedEntity =
+                localProductDataSource.putProductDetails(entity!!.copy(viewCount = entity.viewCount + 1))
+            Output.Success(productEntityToModelMapper.map(updatedEntity!!)) // TODO: wrap with null check
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t

@@ -14,6 +14,9 @@ dependencies {
     implementation(Deps.Network.retrofit)
     implementation(Deps.Network.gson)
 
+    implementation(Deps.WorkManager.core)
+    implementation(Deps.WorkManager.ktx)
+
     implementation(Deps.Dagger.core)
     kapt(Deps.Dagger.compiler)
 }

@@ -2,7 +2,7 @@ package tech.antee.second.data.local.data_sources
 
 import android.content.SharedPreferences
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import tech.antee.second.data.local.models.ProductEntity
 import tech.antee.second.data.local.models.ProductInListEntity
 import tech.antee.second.data.local.shared_preferences.SharedPrefsConfig
@@ -14,8 +14,10 @@ class ProductLocalDataSourceImpl @Inject constructor(
     private val sharedPrefs: SharedPreferences
 ) : ProductLocalDataSource {
 
+    private val _productInListEntityFlow: MutableStateFlow<List<ProductInListEntity>> =
+        MutableStateFlow(productInListEntities() ?: emptyList())
     override val productInListEntityFlow: Flow<List<ProductInListEntity>>
-        get() = flow { } // TODO
+        get() = _productInListEntityFlow
 
     override suspend fun getProductDetails(guid: String): ProductEntity? {
         return try {
@@ -26,11 +28,14 @@ class ProductLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun putProductsInList(products: List<ProductInListEntity>) {
-        sharedPrefs.putList(SharedPrefsConfig.LIST_PRODUCTS_KEY, products)
+        val oldListDiff = (productInListEntities() ?: emptyList()).filter { !products.contains(it) }
+        sharedPrefs.putList(SharedPrefsConfig.LIST_PRODUCTS_KEY, products + oldListDiff)
+        updateProductFlow()
     }
 
     override suspend fun putProducts(products: List<ProductEntity>) {
-        sharedPrefs.putList(SharedPrefsConfig.DETAILS_PRODUCTS_KEY, products)
+        val oldListDiff = (productDetailsEntities() ?: emptyList()).filter { !products.contains(it) }
+        sharedPrefs.putList(SharedPrefsConfig.DETAILS_PRODUCTS_KEY, products + oldListDiff)
     }
 
     override suspend fun addProductDetails(productEntity: ProductEntity) {
@@ -45,6 +50,7 @@ class ProductLocalDataSourceImpl @Inject constructor(
             add(productInListEntity)
         }
         sharedPrefs.putList(SharedPrefsConfig.LIST_PRODUCTS_KEY, newList)
+        updateProductFlow()
     }
 
     override suspend fun putProductDetails(newEntity: ProductEntity): ProductEntity? {
@@ -60,4 +66,8 @@ class ProductLocalDataSourceImpl @Inject constructor(
 
     private fun productDetailsEntities(): List<ProductEntity>? =
         sharedPrefs.getList(SharedPrefsConfig.DETAILS_PRODUCTS_KEY)
+
+    private suspend fun updateProductFlow() {
+        productInListEntities()?.let { _productInListEntityFlow.emit(it) }
+    }
 }
