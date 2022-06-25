@@ -12,6 +12,8 @@ interface ProductRepository {
 
     suspend fun fetchProductList(): EmptyOutput
 
+    suspend fun fetchProductListLocal(): EmptyOutput
+
     suspend fun fetchProductDetails(): EmptyOutput
 
     suspend fun getProductDetails(guid: String): Output<Product>

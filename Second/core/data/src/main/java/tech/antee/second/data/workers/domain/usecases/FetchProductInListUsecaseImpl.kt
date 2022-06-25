@@ -9,6 +9,9 @@ class FetchProductInListUsecaseImpl @Inject constructor( // TODO: separate to an
 ) : FetchProductInListUsecase {
 
     override suspend fun invoke(): EmptyOutput {
-        return productRepository.fetchProductList()
+        return with(productRepository) {
+            fetchProductListLocal()
+            fetchProductList()
+        }
     }
 }

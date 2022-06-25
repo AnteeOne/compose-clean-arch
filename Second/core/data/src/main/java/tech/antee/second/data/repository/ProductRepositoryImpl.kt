@@ -1,7 +1,7 @@
 package tech.antee.second.data.repository
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
 import tech.antee.second.data.local.data_sources.ProductLocalDataSource
 import tech.antee.second.data.local.mappers.ProductDetailsToListEntityMapper
 import tech.antee.second.data.local.mappers.ProductEntityToModelMapper
@@ -24,17 +24,27 @@ class ProductRepositoryImpl @Inject constructor(
     private val productDtoToEntityMapper: ProductDtoToEntityMapper
 ) : ProductRepository {
 
-    override val deviceListFlow: Flow<List<ProductInList>> // TODO: return floe
-        get() = localProductDataSource.productInListEntityFlow
-            .map { entityList ->
-                entityList.map { entity -> productListEntityToModelMapper.map(entity) }
-            }
+    private val _productInListFlow: MutableStateFlow<List<ProductInList>> = MutableStateFlow(emptyList())
+    override val deviceListFlow: Flow<List<ProductInList>> = _productInListFlow
 
     override suspend fun fetchProductList(): EmptyOutput {
         return try {
             val dtoList = remoteProductDataSource.fetchProductList()
             val entityList = dtoList.map(productListDtoToEntityMapper::map)
             localProductDataSource.putProductsInList(entityList)
+            fetchProductListLocal()
+            EmptySuccess
+        } catch (t: Throwable) {
+            when (t) {
+                is CancellationException -> throw t
+                else -> Output.Error(t)
+            }
+        }
+    }
+
+    override suspend fun fetchProductListLocal(): EmptyOutput {
+        return try {
+            _productInListFlow.emit(localProductDataSource.getProductInList().map(productListEntityToModelMapper::map))
             EmptySuccess
         } catch (t: Throwable) {
             when (t) {
@@ -49,6 +59,7 @@ class ProductRepositoryImpl @Inject constructor(
             val dtoList = remoteProductDataSource.fetchProductDetailsList()
             val entityList = dtoList.map(productDtoToEntityMapper::map)
             localProductDataSource.putProducts(entityList)
+            fetchProductListLocal()
             EmptySuccess
         } catch (t: Throwable) {
             when (t) {
@@ -77,6 +88,7 @@ class ProductRepositoryImpl @Inject constructor(
         localProductDataSource.apply {
             addProductDetails(productEntity)
             addProductInList(productDetailsToListEntityMapper.map(productEntity))
+            fetchProductListLocal()
         }
     }
 }
