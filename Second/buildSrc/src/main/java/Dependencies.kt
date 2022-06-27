@@ -11,7 +11,7 @@ object Versions {
     const val androidxNavigation = "2.4.2"
     const val androidxLifecycle = "2.4.0"
     const val androidxViewpager = "1.1.0-alpha01"
-    const val androidxWorkManager = "2.4.0"
+    const val androidxWorkManager = "2.7.1"
     const val androidxRoom = "2.4.0-beta01"
     const val androidxPaging = "3.0.0-alpha06"
     const val androidxViewPager2 = "1.0.0"
@@ -92,6 +92,7 @@ object Deps {
     }
 
     object Coroutines {
+        const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutine}"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutine}"
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.androidxLifecycle}"
     }
@@ -109,5 +110,12 @@ object Deps {
     object Network {
         const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.retrofit}"
         const val gson = "com.squareup.retrofit2:converter-gson:${Versions.retrofit}"
+        const val okHttp = "com.squareup.okhttp3:okhttp:${Versions.okHttp}"
+        const val okHttpLogging = "com.squareup.okhttp3:logging-interceptor:${Versions.okHttp}"
+    }
+
+    object WorkManager {
+        const val core = "androidx.work:work-runtime:${Versions.androidxWorkManager}"
+        const val ktx = "androidx.work:work-runtime-ktx:${Versions.androidxWorkManager}"
     }
 }

@@ -6,11 +6,16 @@ plugins {
 
 dependencies {
     projectImplementation(Modules.coreDomain)
+    projectImplementation(Modules.coreDi)
 
     implementation(Deps.appCompat)
     implementation(Deps.coreKtx)
+    implementation(Deps.Coroutines.core)
     implementation(Deps.Network.retrofit)
     implementation(Deps.Network.gson)
+
+    implementation(Deps.WorkManager.core)
+    implementation(Deps.WorkManager.ktx)
 
     implementation(Deps.Dagger.core)
     kapt(Deps.Dagger.compiler)

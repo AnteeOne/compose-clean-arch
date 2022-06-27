@@ -4,9 +4,10 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,11 +58,14 @@ fun ProductListScreen(
             is ProductListUiState.Success -> {
                 Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
                     LazyColumn(modifier = Modifier.weight(1f)) {
-                        items(state.data) {
+                        itemsIndexed(state.data) { index, it ->
                             ProductListItemComponent(
                                 item = it,
                                 onClick = { viewModel.onAction(ProductListAction.OnDeviceClick(it.guid)) }
                             )
+                            if (index != state.data.lastIndex) {
+                                Divider(Modifier.fillMaxWidth().padding(vertical = Dimensions.paddingVerticalXs))
+                            }
                         }
                     }
                     Button(
@@ -77,5 +81,6 @@ fun ProductListScreen(
 }
 
 private fun onError(t: Throwable, context: Context) {
+    t.printStackTrace()
     Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show()
 }

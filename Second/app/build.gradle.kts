@@ -43,4 +43,7 @@ dependencies {
 
     implementation(Deps.Network.retrofit)
     implementation(Deps.Network.gson)
+
+    implementation(Deps.WorkManager.core)
+    implementation(Deps.WorkManager.ktx)
 }
