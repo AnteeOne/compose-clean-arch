@@ -11,7 +11,7 @@ internal inline fun <reified T> SharedPreferences.getList(key: String?): List<T>
     val gson = Gson()
     val type: Type = object : TypeToken<List<T>?>() {}.type
     return gson.fromJson<List<T>?>(getString(key, ""), type).also {
-        Log.d(TAG_DATA_LOCAL, "Getting data from cache: size = ${it.size}, data =  $it.")
+        Log.d(TAG_DATA_LOCAL, "Getting data from cache: size = ${it?.size}, data =  $it.")
     }
 }
 

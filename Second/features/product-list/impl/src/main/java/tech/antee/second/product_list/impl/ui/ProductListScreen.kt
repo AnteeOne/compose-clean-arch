@@ -9,14 +9,14 @@ import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import tech.antee.second.product_list.impl.ui.models.ProductListAction
 import tech.antee.second.product_list.impl.ui.models.ProductListEvent
 import tech.antee.second.product_list.impl.ui.models.ProductListUiState
@@ -32,6 +32,7 @@ fun ProductListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(Unit) {
         viewModel.fetchProductList()
@@ -42,6 +43,17 @@ fun ProductListScreen(
                 is ProductListEvent.NavigateToProductAdding -> onProductAddingButtonClick()
             }
         }
+    }
+    DisposableEffect(context, lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> viewModel.onAction(ProductListAction.OnStartPeriodicFetching)
+                Lifecycle.Event.ON_STOP -> viewModel.onAction(ProductListAction.OnStopPeriodicFetching)
+                else -> {}
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     Box(
