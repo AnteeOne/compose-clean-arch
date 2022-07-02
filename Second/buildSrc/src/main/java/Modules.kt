@@ -17,4 +17,6 @@ object Modules {
 
     const val featureProductAddingApi = ":features:product-adding:api"
     const val featureProductAddingImpl = ":features:product-adding:impl"
+
+    const val libComposeNetworkManager = ":libs:compose-network-manager"
 }

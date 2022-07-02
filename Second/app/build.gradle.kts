@@ -25,6 +25,8 @@ dependencies {
     projectImplementation(Modules.featureProductDetailsImpl)
     projectImplementation(Modules.featureProductAddingImpl)
 
+    projectImplementation(Modules.libComposeNetworkManager)
+
     implementation(Deps.Compose.ui)
     implementation(Deps.Compose.foundation)
     implementation(Deps.Compose.material)

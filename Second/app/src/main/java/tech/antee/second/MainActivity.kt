@@ -5,6 +5,10 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import tech.antee.compose_network_manager.manager.NetworkManagerImpl
+import tech.antee.compose_network_manager.ui.NetworkHandlingComponent
+import tech.antee.compose_network_manager.ui.NetworkSnackComponent
 import tech.antee.second.compose_features.LocalDestinations
 import tech.antee.second.di.LocalAppProvider
 import tech.antee.second.navigation.Navigation
@@ -17,8 +21,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            SecondTheme {
-                DependenciesProvider {
+            SecondApp()
+        }
+    }
+
+    @Composable
+    private fun SecondApp() {
+        SecondTheme {
+            DependenciesProvider {
+                NetworkHandlingSnackComponent {
                     Navigation()
                 }
             }
@@ -36,4 +47,16 @@ class MainActivity : AppCompatActivity() {
         LocalProductAddingDependencies provides application.appProvider,
         content = content
     )
+
+    @Composable
+    fun NetworkHandlingSnackComponent(
+        content: @Composable () -> Unit
+    ) {
+        val networkManager = remember { NetworkManagerImpl(application) }
+        NetworkHandlingComponent(networkManager) {
+            NetworkSnackComponent {
+                content()
+            }
+        }
+    }
 }
