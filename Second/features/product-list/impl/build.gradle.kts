@@ -5,6 +5,12 @@ plugins {
     id(Plugins.kotlinKapt)
 }
 
+android {
+    buildFeatures {
+        viewBinding = true
+    }
+}
+
 dependencies {
     projectApi(Modules.featureProductListApi)
     projectApi(Modules.featureProductDetailsApi)
@@ -19,6 +25,8 @@ dependencies {
     implementation(Deps.appCompat)
     implementation(Deps.coreKtx)
     implementation(Deps.material)
+
+    implementation(Deps.AndroidView.koil)
 
     implementation(Deps.Compose.ui)
     implementation(Deps.Compose.foundation)
