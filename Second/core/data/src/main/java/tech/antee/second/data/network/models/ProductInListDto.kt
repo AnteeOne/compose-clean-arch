@@ -6,7 +6,7 @@ data class ProductInListDto(
     @SerializedName("guid")
     val guid: String,
     @SerializedName("image")
-    val image: String,
+    val image: List<String>,
     @SerializedName("name")
     val name: String,
     @SerializedName("price")

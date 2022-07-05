@@ -1,48 +1,52 @@
 package tech.antee.second.product_list.impl.ui.recycler
 
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import tech.antee.second.product_list.impl.databinding.ItemProductListBinding
 import tech.antee.second.product_list.impl.ui.models.ProductListItem
+import tech.antee.second.product_list.impl.ui.recycler.diffutils.RecyclerItemCallback
+import tech.antee.second.product_list.impl.ui.recycler.models.RecycleItemViewType
+import tech.antee.second.product_list.impl.ui.recycler.models.RecyclerItem
+import tech.antee.second.product_list.impl.ui.recycler.view_holders.HeaderViewHolder
+import tech.antee.second.product_list.impl.ui.recycler.view_holders.ProductListViewHolder
 
 class ProductListAdapter(
     private val onDetailsClick: (productGuid: String) -> Unit,
-) :
-    ListAdapter<ProductListItem, ProductListAdapter.ProductListViewHolder>(ProductListItemCallback()) {
+) : ListAdapter<RecyclerItem, RecyclerView.ViewHolder>(RecyclerItemCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductListViewHolder {
-        val binding = ItemProductListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ProductListViewHolder(binding, onDetailsClick)
-    }
-
-    override fun onBindViewHolder(holder: ProductListViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-
-    class ProductListItemCallback : DiffUtil.ItemCallback<ProductListItem>() {
-
-        override fun areItemsTheSame(oldItem: ProductListItem, newItem: ProductListItem) = oldItem.guid == newItem.guid
-
-        override fun areContentsTheSame(oldItem: ProductListItem, newItem: ProductListItem) = oldItem == newItem
-    }
-
-    class ProductListViewHolder(
-        private val binding: ItemProductListBinding,
-        private val onDetailsClick: (productGuid: String) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        private val TAG = "ProductListViewHolder"
-
-        fun bind(item: ProductListItem) {
-            Log.d(TAG, "Binded ${item.name}")
-            binding.root.setOnClickListener { onDetailsClick(item.guid) }
-            binding.itemProductListName.text = item.name
-            binding.itemProductListImage.load(item.image)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            RecycleItemViewType.PRODUCT.viewType -> ProductListViewHolder.from(parent, onDetailsClick)
+            RecycleItemViewType.HEADER.viewType -> HeaderViewHolder.from(parent)
+            else -> throw ClassCastException("Unknown viewType $viewType")
         }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is ProductListViewHolder -> holder.bind(getItem(position) as RecyclerItem.Product)
+            is HeaderViewHolder -> holder.bind(getItem(position) as RecyclerItem.Header)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+        is RecyclerItem.Header -> RecycleItemViewType.HEADER.viewType
+        is RecyclerItem.Product -> RecycleItemViewType.PRODUCT.viewType
+    }
+
+    fun submitSectionalSortedList(
+        list: List<ProductListItem>,
+        priceBorder: Int = PRICE_BORDER
+    ) {
+        val sortedProducts = buildList {
+            add(RecyclerItem.Header("< $priceBorder ₽"))
+            addAll(list.filter { it.parseProductPrice() < priceBorder }.map { RecyclerItem.Product(it) })
+            add(RecyclerItem.Header(">= $priceBorder ₽"))
+            addAll(list.filter { it.parseProductPrice() >= priceBorder }.map { RecyclerItem.Product(it) })
+        }
+        submitList(sortedProducts)
+    }
+
+    private companion object {
+        const val PRICE_BORDER = 100
     }
 }

@@ -27,5 +27,5 @@ fun ProductRecyclerListComponent(
             }
         }
     )
-    listAdapter.submitList(items) // TODO: check AndroidView Factory method
+    listAdapter.submitSectionalSortedList(items) // TODO: check AndroidView Factory method
 }
