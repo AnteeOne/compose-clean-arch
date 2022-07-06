@@ -3,8 +3,10 @@ package tech.antee.second.product_list.impl.ui.recycler.view_holders
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tech.antee.second.product_list.impl.databinding.ItemProductListBinding
+import tech.antee.second.product_list.impl.ui.recycler.ImagesAdapter
 import tech.antee.second.product_list.impl.ui.recycler.models.RecyclerItem
 
 class ProductListViewHolder(
@@ -14,11 +16,21 @@ class ProductListViewHolder(
 
     private val TAG = "ProductListViewHolder"
 
-    fun bind(item: RecyclerItem.Product) {
+    private val imagesAdapter = ImagesAdapter()
+
+    init {
+        binding.itemProductListImages.apply {
+            adapter = imagesAdapter
+            layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+        }
+    }
+
+    fun bind(item: RecyclerItem.Product) = with(binding) {
         Log.d(TAG, "Binded ${item.productItem.name}")
-        binding.root.setOnClickListener { onDetailsClick(item.productItem.guid) }
-        binding.itemProductListName.text = item.productItem.name
-        binding.itemProductPrice.text = item.productItem.price + "₽" // TODO: to string (лень кпц)
+        imagesAdapter.submitList(item.productItem.images)
+        root.setOnClickListener { onDetailsClick(item.productItem.guid) }
+        itemProductListName.text = item.productItem.name
+        itemProductPrice.text = item.productItem.price + "₽" // TODO: to string (лень кпц)
     }
 
     companion object {
