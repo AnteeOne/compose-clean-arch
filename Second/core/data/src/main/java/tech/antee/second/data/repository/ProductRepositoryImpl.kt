@@ -83,6 +83,17 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun putProductToCart(guid: String) {
+        with(localProductDataSource) {
+            getProductDetails(guid)?.let { productDetails ->
+                putProductDetails(productDetails.copy(isInCart = true))?.let {
+                    putProductInList(productDetailsToListEntityMapper.map(it))
+                    fetchProductListLocal()
+                }
+            }
+        }
+    }
+
     override suspend fun addProduct(product: Product) {
         val productEntity = productEntityToModelMapper.mapBack(product)
         localProductDataSource.apply {

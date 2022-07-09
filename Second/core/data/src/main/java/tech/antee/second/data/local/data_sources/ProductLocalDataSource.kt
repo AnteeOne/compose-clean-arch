@@ -18,4 +18,6 @@ interface ProductLocalDataSource {
     suspend fun addProductInList(productInListEntity: ProductInListEntity)
 
     suspend fun putProductDetails(productEntity: ProductEntity): ProductEntity?
+
+    suspend fun putProductInList(newEntity: ProductInListEntity)
 }

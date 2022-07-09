@@ -12,11 +12,16 @@ import tech.antee.second.product_list.impl.ui.recycler.view_holders.ProductListV
 
 class ProductListAdapter(
     private val onDetailsClick: (productGuid: String) -> Unit,
+    private val onCartButtonClick: (productGuid: String) -> Unit
 ) : ListAdapter<RecyclerItem, RecyclerView.ViewHolder>(RecyclerItemCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            RecycleItemViewType.PRODUCT.viewType -> ProductListViewHolder.from(parent, onDetailsClick)
+            RecycleItemViewType.PRODUCT.viewType -> ProductListViewHolder.from(
+                parent,
+                onDetailsClick,
+                onCartButtonClick
+            )
             RecycleItemViewType.HEADER.viewType -> HeaderViewHolder.from(parent)
             else -> throw ClassCastException("Unknown viewType $viewType")
         }

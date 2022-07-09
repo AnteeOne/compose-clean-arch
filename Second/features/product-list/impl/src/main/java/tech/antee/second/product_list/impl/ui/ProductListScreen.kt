@@ -82,7 +82,8 @@ fun ProductListScreen(
                             .fillMaxSize()
                             .weight(1f),
                         items = state.data,
-                        onDetailsClick = onDetailsClick
+                        onDetailsClick = onDetailsClick,
+                        onCartButtonClick = { viewModel.onAction(ProductListAction.OnProductShopCartClick(it)) }
                     )
                     Button(
                         modifier = Modifier.fillMaxWidth(),

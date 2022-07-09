@@ -14,9 +14,10 @@ fun ProductRecyclerListComponent(
     items: List<ProductListItem>,
     modifier: Modifier = Modifier,
     onDetailsClick: (productGuid: String) -> Unit,
+    onCartButtonClick: (productGuid: String) -> Unit
 ) {
     val context = LocalContext.current
-    val listAdapter = remember { ProductListAdapter(onDetailsClick) }
+    val listAdapter = remember { ProductListAdapter(onDetailsClick, onCartButtonClick) }
     val listLayoutManager = remember { LinearLayoutManager(context) }
     AndroidView(
         modifier = modifier,
