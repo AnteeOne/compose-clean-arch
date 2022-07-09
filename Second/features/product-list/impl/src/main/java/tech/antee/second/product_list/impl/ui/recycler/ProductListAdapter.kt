@@ -3,6 +3,7 @@ package tech.antee.second.product_list.impl.ui.recycler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import tech.antee.second.product_list.impl.ui.models.ProductListItem
 import tech.antee.second.product_list.impl.ui.recycler.diffutils.RecyclerItemCallback
 import tech.antee.second.product_list.impl.ui.recycler.models.RecycleItemViewType
@@ -15,10 +16,13 @@ class ProductListAdapter(
     private val onCartButtonClick: (productGuid: String) -> Unit
 ) : ListAdapter<RecyclerItem, RecyclerView.ViewHolder>(RecyclerItemCallback()) {
 
+    private var sharedViewPool: RecycledViewPool = RecycledViewPool()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
             RecycleItemViewType.PRODUCT.viewType -> ProductListViewHolder.from(
                 parent,
+                sharedViewPool,
                 onDetailsClick,
                 onCartButtonClick
             )
@@ -34,17 +38,13 @@ class ProductListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isEmpty()) {
-            super.onBindViewHolder(holder, position, payloads)
-        } else {
-            if (payloads[0] == true) {
-                when (holder) {
-                    is ProductListViewHolder -> {
-                        val recyclerItem = getItem(position) as RecyclerItem.Product
-                        holder.bindShoppingCartButtonState(recyclerItem.productItem.isInCart)
-                    }
-                    is HeaderViewHolder -> holder.bind(getItem(position) as RecyclerItem.Header)
-                }
+        when {
+            payloads.isEmpty() -> super.onBindViewHolder(holder, position, payloads)
+            payloads[0] == false -> {}
+            holder is HeaderViewHolder -> holder.bind(getItem(position) as RecyclerItem.Header)
+            holder is ProductListViewHolder -> {
+                val recyclerItem = getItem(position) as RecyclerItem.Product
+                holder.bindShoppingCartButtonState(recyclerItem.productItem.isInCart)
             }
         }
     }

@@ -12,6 +12,7 @@ import tech.antee.second.product_list.impl.ui.recycler.models.RecyclerItem
 
 class ProductListViewHolder(
     private val binding: ItemProductListBinding,
+    private val sharedViewPool: RecyclerView.RecycledViewPool,
     private val onDetailsClick: (productGuid: String) -> Unit,
     private val onCartButtonClick: (productGuid: String) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -26,6 +27,7 @@ class ProductListViewHolder(
             itemProductListImages.apply {
                 adapter = imagesAdapter
                 layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+                setRecycledViewPool(sharedViewPool)
             }
             with(itemProductBtnShopCart) {
                 setOnClickListener {
@@ -60,11 +62,12 @@ class ProductListViewHolder(
     companion object {
         fun from(
             parent: ViewGroup,
+            recyclerViewPool: RecyclerView.RecycledViewPool,
             onDetailsClick: (productGuid: String) -> Unit,
             onCartButtonClick: (productGuid: String) -> Unit
         ): ProductListViewHolder {
             val binding = ItemProductListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return ProductListViewHolder(binding, onDetailsClick, onCartButtonClick)
+            return ProductListViewHolder(binding, recyclerViewPool, onDetailsClick, onCartButtonClick)
         }
     }
 }
