@@ -3,6 +3,7 @@ package tech.antee.second.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import tech.antee.second.data.local.data_sources.ProductLocalDataSource
+import tech.antee.second.data.local.data_sources.ShopCartDataSourceImpl
 import tech.antee.second.data.local.mappers.ProductDetailsToListEntityMapper
 import tech.antee.second.data.local.mappers.ProductEntityToModelMapper
 import tech.antee.second.data.local.mappers.ProductListEntityToModelMapper
@@ -17,6 +18,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class ProductRepositoryImpl @Inject constructor(
     private val remoteProductDataSource: ProductRemoteDataSource,
     private val localProductDataSource: ProductLocalDataSource,
+    private val shopCartDataSourceImpl: ShopCartDataSourceImpl,
     private val productListEntityToModelMapper: ProductListEntityToModelMapper,
     private val productEntityToModelMapper: ProductEntityToModelMapper,
     private val productDetailsToListEntityMapper: ProductDetailsToListEntityMapper,
