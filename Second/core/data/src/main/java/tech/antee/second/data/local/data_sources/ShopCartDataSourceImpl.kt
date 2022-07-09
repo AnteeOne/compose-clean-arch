@@ -1,5 +1,6 @@
 package tech.antee.second.data.local.data_sources
 
+import android.util.Log
 import javax.inject.Inject
 
 class ShopCartDataSourceImpl @Inject constructor() : ShopCartDataSource {
@@ -15,9 +16,10 @@ class ShopCartDataSourceImpl @Inject constructor() : ShopCartDataSource {
 
     override fun addProduct(guid: String) {
         when (guid) {
-            in shopCart.keys -> shopCart[guid] = BORDER_PRODUCT_COUNT
+            !in shopCart.keys -> shopCart[guid] = BORDER_PRODUCT_COUNT
             else -> shopCart[guid] = requireNotNull(shopCart[guid]) + 1
         }
+        Log.d(TAG,"Added product with guid = $guid, current shop cart = $shopCart")
     }
 
     override fun deleteProduct(guid: String) {
@@ -30,5 +32,6 @@ class ShopCartDataSourceImpl @Inject constructor() : ShopCartDataSource {
 
     private companion object {
         const val BORDER_PRODUCT_COUNT = 1
+        const val TAG = "ShopCartDataSourceImpl"
     }
 }

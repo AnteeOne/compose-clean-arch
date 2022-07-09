@@ -3,7 +3,7 @@ package tech.antee.second.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import tech.antee.second.data.local.data_sources.ProductLocalDataSource
-import tech.antee.second.data.local.data_sources.ShopCartDataSourceImpl
+import tech.antee.second.data.local.data_sources.ShopCartDataSource
 import tech.antee.second.data.local.mappers.ProductDetailsToListEntityMapper
 import tech.antee.second.data.local.mappers.ProductEntityToModelMapper
 import tech.antee.second.data.local.mappers.ProductListEntityToModelMapper
@@ -18,7 +18,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class ProductRepositoryImpl @Inject constructor(
     private val remoteProductDataSource: ProductRemoteDataSource,
     private val localProductDataSource: ProductLocalDataSource,
-    private val shopCartDataSourceImpl: ShopCartDataSourceImpl,
+    private val shopCartDataSource: ShopCartDataSource,
     private val productListEntityToModelMapper: ProductListEntityToModelMapper,
     private val productEntityToModelMapper: ProductEntityToModelMapper,
     private val productDetailsToListEntityMapper: ProductDetailsToListEntityMapper,
@@ -46,7 +46,16 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun fetchProductListLocal(): EmptyOutput {
         return try {
-            _productInListFlow.emit(localProductDataSource.getProductInList().map(productListEntityToModelMapper::map))
+            _productInListFlow.emit(
+                localProductDataSource.getProductInList()
+                    .map(productListEntityToModelMapper::map)
+                    .map { product ->
+                        when {
+                            shopCartDataSource.containsProduct(product.guid) -> product.copy(isInCart = true)
+                            else -> product
+                        }
+                    }
+            )
             EmptySuccess
         } catch (t: Throwable) {
             when (t) {
@@ -74,9 +83,9 @@ class ProductRepositoryImpl @Inject constructor(
     override suspend fun getProductDetails(guid: String): Output<Product> {
         return try {
             val entity = localProductDataSource.getProductDetails(guid)
-            val updatedEntity =
-                localProductDataSource.putProductDetails(entity!!.copy(viewCount = entity.viewCount + 1))
-            Output.Success(productEntityToModelMapper.map(updatedEntity!!)) // TODO: wrap with null check
+            val updatedEntity = localProductDataSource
+                .putProductDetails(requireNotNull(entity).copy(viewCount = entity.viewCount + 1))
+            Output.Success(productEntityToModelMapper.map(requireNotNull(updatedEntity)))
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t
@@ -86,14 +95,8 @@ class ProductRepositoryImpl @Inject constructor(
     }
 
     override suspend fun putProductToCart(guid: String) {
-        with(localProductDataSource) {
-            getProductDetails(guid)?.let { productDetails ->
-                putProductDetails(productDetails.copy(isInCart = true))?.let {
-                    putProductInList(productDetailsToListEntityMapper.map(it))
-                    fetchProductListLocal()
-                }
-            }
-        }
+        shopCartDataSource.addProduct(guid)
+        fetchProductListLocal()
     }
 
     override suspend fun addProduct(product: Product) {
