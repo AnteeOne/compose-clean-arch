@@ -19,33 +19,42 @@ class ProductListViewHolder(
     private val TAG = "ProductListViewHolder"
 
     private val imagesAdapter = ImagesAdapter()
+    lateinit var productGuid: String
 
     init {
-        binding.itemProductListImages.apply {
-            adapter = imagesAdapter
-            layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+        with(binding) {
+            itemProductListImages.apply {
+                adapter = imagesAdapter
+                layoutManager = LinearLayoutManager(binding.root.context, LinearLayoutManager.HORIZONTAL, false)
+            }
+            with(itemProductBtnShopCart) {
+                setOnClickListener {
+                    if (state == ShoppingCartButtonState.NotInCart) {
+                        setState(ShoppingCartButtonState.Loading)
+                        onCartButtonClick(productGuid)
+                    }
+                }
+            }
+            root.setOnClickListener { onDetailsClick(productGuid) }
         }
     }
 
     fun bind(item: RecyclerItem.Product) = with(binding) {
         Log.d(TAG, "Binded ${item.productItem.name}")
+        productGuid = item.productItem.guid
+
         imagesAdapter.submitList(item.productItem.images)
         itemProductBtnShopCart.setState(
             if (item.productItem.isInCart) ShoppingCartButtonState.InCart else ShoppingCartButtonState.NotInCart
         )
-
-        root.setOnClickListener { onDetailsClick(item.productItem.guid) }
-        with(itemProductBtnShopCart) {
-            setOnClickListener {
-                if (state == ShoppingCartButtonState.NotInCart) {
-                    setState(ShoppingCartButtonState.Loading)
-                    onCartButtonClick(item.productItem.guid)
-                }
-            }
-        }
-
         itemProductListName.text = item.productItem.name
         itemProductPrice.text = item.productItem.price + "₽" // TODO: to string (лень кпц)
+    }
+
+    fun bindShoppingCartButtonState(isInCart: Boolean) {
+        binding.itemProductBtnShopCart.setState(
+            if (isInCart) ShoppingCartButtonState.InCart else ShoppingCartButtonState.NotInCart
+        )
     }
 
     companion object {

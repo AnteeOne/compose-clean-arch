@@ -33,6 +33,22 @@ class ProductListAdapter(
         }
     }
 
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            if (payloads[0] == true) {
+                when (holder) {
+                    is ProductListViewHolder -> {
+                        val recyclerItem = getItem(position) as RecyclerItem.Product
+                        holder.bindShoppingCartButtonState(recyclerItem.productItem.isInCart)
+                    }
+                    is HeaderViewHolder -> holder.bind(getItem(position) as RecyclerItem.Header)
+                }
+            }
+        }
+    }
+
     override fun getItemViewType(position: Int): Int = when (getItem(position)) {
         is RecyclerItem.Header -> RecycleItemViewType.HEADER.viewType
         is RecyclerItem.Product -> RecycleItemViewType.PRODUCT.viewType
