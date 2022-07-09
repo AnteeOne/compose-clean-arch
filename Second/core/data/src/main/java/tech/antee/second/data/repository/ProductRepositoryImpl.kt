@@ -105,12 +105,14 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun putProductToCart(guid: String) {
+    override suspend fun putProductToCart(guid: String): Int {
         shopCartDataSource.addProduct(guid)
+        return shopCartDataSource.getProductCountInCart(guid)
     }
 
-    override suspend fun removeProductFromCart(guid: String) {
+    override suspend fun removeProductFromCart(guid: String): Int {
         shopCartDataSource.deleteProduct(guid)
+        return shopCartDataSource.getProductCountInCart(guid)
     }
 
     override suspend fun addProduct(product: Product) {

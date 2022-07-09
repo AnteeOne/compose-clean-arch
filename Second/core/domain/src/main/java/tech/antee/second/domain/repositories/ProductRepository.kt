@@ -18,9 +18,9 @@ interface ProductRepository {
 
     suspend fun getProductDetails(guid: String, increaseViewCount: Boolean): Output<Product>
 
-    suspend fun putProductToCart(guid: String)
+    suspend fun putProductToCart(guid: String): Int
 
-    suspend fun removeProductFromCart(guid: String)
+    suspend fun removeProductFromCart(guid: String): Int
 
     suspend fun addProduct(product: Product)
 }

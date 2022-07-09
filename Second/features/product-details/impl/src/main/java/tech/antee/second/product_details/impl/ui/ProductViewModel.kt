@@ -32,16 +32,16 @@ class ProductViewModel @Inject constructor(
 
     fun onAction(action: ProductAction) {
         when (action) {
-            is ProductAction.OnFetchProduct -> fetchProduct(action.guid,true)
+            is ProductAction.OnFetchProduct -> fetchProduct(action.guid, true)
             is ProductAction.OnAddToCartClick -> addProductToCart()
             is ProductAction.OnRemoveFromCartClick -> removeProductFromCart()
         }
     }
 
-    private fun fetchProduct(guid: String,increaseViewCount: Boolean) {
+    private fun fetchProduct(guid: String, increaseViewCount: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = ProductUiState.Loading
-            when (val result = getProductUsecase(guid,increaseViewCount)) {
+            when (val result = getProductUsecase(guid, increaseViewCount)) {
                 is Output.Error -> _events.trySend(ProductEvent.ShowError(result.t))
                 is Output.Success -> _uiState.value = ProductUiState.Success(mapper.map(result.data))
             }
@@ -50,20 +50,22 @@ class ProductViewModel @Inject constructor(
 
     private fun addProductToCart() {
         if (uiState.value is ProductUiState.Success) {
-            val guid = (uiState.value as ProductUiState.Success).data.guid
+            val product = (uiState.value as ProductUiState.Success).data
             viewModelScope.launch {
-                addProductToCartUsecase(guid)
-                fetchProduct(guid,false)
+                _uiState.value = ProductUiState.Success(
+                    data = product.copy(inCartItemCount = addProductToCartUsecase(product.guid))
+                )
             }
         }
     }
 
     private fun removeProductFromCart() {
         if (uiState.value is ProductUiState.Success) {
-            val guid = (uiState.value as ProductUiState.Success).data.guid
+            val product = (uiState.value as ProductUiState.Success).data
             viewModelScope.launch {
-                removeProductFromCartUsecase(guid)
-                fetchProduct(guid,false)
+                _uiState.value = ProductUiState.Success(
+                    data = product.copy(inCartItemCount = removeProductFromCartUsecase(product.guid))
+                )
             }
         }
     }

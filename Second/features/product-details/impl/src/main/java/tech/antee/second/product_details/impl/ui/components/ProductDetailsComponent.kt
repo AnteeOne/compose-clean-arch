@@ -1,5 +1,6 @@
 package tech.antee.second.product_details.impl.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,13 +59,14 @@ fun ProductDetailsComponent(
         AndroidView(
             modifier = Modifier.fillMaxWidth(),
             factory = {
-                ShopCartButtonExtView(it).apply {
-                    setInCartCount(productItem.inCartItemCount)
-                    setOnClickListener { type ->
-                        when (type) {
-                            ShopCartBtnClickType.OnAdd -> onAddToCartClick()
-                            ShopCartBtnClickType.OnRemove -> onRemoveFromCartClick()
-                        }
+                ShopCartButtonExtView(it)
+            },
+            update = {
+                it.setInCartCount(productItem.inCartItemCount)
+                it.setOnClickListener { type ->
+                    when (type) {
+                        ShopCartBtnClickType.OnAdd -> onAddToCartClick()
+                        ShopCartBtnClickType.OnRemove -> onRemoveFromCartClick()
                     }
                 }
             }

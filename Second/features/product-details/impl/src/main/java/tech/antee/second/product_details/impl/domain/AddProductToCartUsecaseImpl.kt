@@ -7,7 +7,7 @@ class AddProductToCartUsecaseImpl @Inject constructor(
     private val productRepository: ProductRepository
 ) : AddProductToCartUsecase {
 
-    override suspend fun invoke(guid: String) {
-        productRepository.putProductToCart(guid)
+    override suspend fun invoke(guid: String): Int {
+        return productRepository.putProductToCart(guid)
     }
 }
