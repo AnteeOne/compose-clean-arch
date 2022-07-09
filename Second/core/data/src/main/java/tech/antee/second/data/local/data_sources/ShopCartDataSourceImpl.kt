@@ -11,7 +11,7 @@ class ShopCartDataSourceImpl @Inject constructor() : ShopCartDataSource {
 
     override fun getProductCountInCart(guid: String): Int = when (guid) {
         in shopCart.keys -> requireNotNull(shopCart[guid])
-        else -> 0
+        else -> EMPTY_PRODUCT_COUNT
     }
 
     override fun addProduct(guid: String) {
@@ -19,19 +19,24 @@ class ShopCartDataSourceImpl @Inject constructor() : ShopCartDataSource {
             !in shopCart.keys -> shopCart[guid] = BORDER_PRODUCT_COUNT
             else -> shopCart[guid] = requireNotNull(shopCart[guid]) + 1
         }
-        Log.d(TAG,"Added product with guid = $guid, current shop cart = $shopCart")
+        Log.d(TAG, "Added product with guid = $guid, current shop cart = $shopCart")
     }
 
     override fun deleteProduct(guid: String) {
-        when {
-            guid !in shopCart.keys -> error("Cart doesn't contains product with guid = $guid")
-            shopCart[guid] == BORDER_PRODUCT_COUNT -> shopCart.remove(guid)
-            else -> shopCart[guid] = requireNotNull(shopCart[guid]) - 1
+        try {
+            when {
+                guid !in shopCart.keys -> error("Cart doesn't contains product with guid = $guid")
+                shopCart[guid] == BORDER_PRODUCT_COUNT -> shopCart.remove(guid)
+                else -> shopCart[guid] = requireNotNull(shopCart[guid]) - 1
+            }
+        } catch (t: Throwable) {
+            Log.d(TAG, "Some error with shop cart")
         }
     }
 
     private companion object {
         const val BORDER_PRODUCT_COUNT = 1
+        const val EMPTY_PRODUCT_COUNT = 0
         const val TAG = "ShopCartDataSourceImpl"
     }
 }

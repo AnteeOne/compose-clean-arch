@@ -16,9 +16,11 @@ interface ProductRepository {
 
     suspend fun fetchProductDetails(): EmptyOutput
 
-    suspend fun getProductDetails(guid: String): Output<Product>
+    suspend fun getProductDetails(guid: String, increaseViewCount: Boolean): Output<Product>
 
     suspend fun putProductToCart(guid: String)
+
+    suspend fun removeProductFromCart(guid: String)
 
     suspend fun addProduct(product: Product)
 }

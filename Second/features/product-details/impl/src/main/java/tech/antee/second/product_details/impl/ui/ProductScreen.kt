@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import tech.antee.second.product_details.impl.ui.components.ProductDetailsComponent
+import tech.antee.second.product_details.impl.ui.models.ProductAction
 import tech.antee.second.product_details.impl.ui.models.ProductEvent
 import tech.antee.second.product_details.impl.ui.models.ProductUiState
 import tech.antee.second.theme.Dimensions
@@ -29,7 +30,7 @@ fun ProductScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.fetchProduct(productGuid)
+        viewModel.onAction(ProductAction.OnFetchProduct(productGuid))
         viewModel.events.collect {
             when (it) {
                 is ProductEvent.ShowError -> onError(it.t, context)
@@ -48,7 +49,11 @@ fun ProductScreen(
         when (val state = uiState) {
             is ProductUiState.Empty -> {}
             is ProductUiState.Loading -> CircularProgressIndicator(modifier.align(Alignment.Center))
-            is ProductUiState.Success -> ProductDetailsComponent(state.data)
+            is ProductUiState.Success -> ProductDetailsComponent(
+                productItem = state.data,
+                onAddToCartClick = { viewModel.onAction(ProductAction.OnAddToCartClick) },
+                onRemoveFromCartClick = { viewModel.onAction(ProductAction.OnRemoveFromCartClick) }
+            )
         }
     }
 }

@@ -8,6 +8,7 @@ data class ProductItem(
     val rating: Double,
     val isFavorite: Boolean,
     val isInCart: Boolean,
+    val inCartItemCount: Int,
     val images: List<String>,
     val weight: Double?,
     val count: Int?,
