@@ -3,11 +3,8 @@ package tech.antee.second.product_list.impl.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,7 +17,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import tech.antee.second.product_list.impl.ui.models.ProductListAction
 import tech.antee.second.product_list.impl.ui.models.ProductListEvent
 import tech.antee.second.product_list.impl.ui.models.ProductListUiState
-import tech.antee.second.product_list.impl.ui.ui_components.ProductListItemComponent
+import tech.antee.second.product_list.impl.ui.recycler.ProductRecyclerListComponent
 import tech.antee.second.theme.Dimensions
 
 @Composable
@@ -69,17 +66,25 @@ fun ProductListScreen(
             is ProductListUiState.Loading -> CircularProgressIndicator(modifier.align(Alignment.Center))
             is ProductListUiState.Success -> {
                 Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-                    LazyColumn(modifier = Modifier.weight(1f)) {
-                        itemsIndexed(state.data) { index, it ->
-                            ProductListItemComponent(
-                                item = it,
-                                onClick = { viewModel.onAction(ProductListAction.OnDeviceClick(it.guid)) }
-                            )
-                            if (index != state.data.lastIndex) {
-                                Divider(Modifier.fillMaxWidth().padding(vertical = Dimensions.paddingVerticalXs))
-                            }
-                        }
-                    }
+//                    LazyColumn(modifier = Modifier.weight(1f)) {
+//                        itemsIndexed(state.data) { index, it ->
+//                            ProductListItemComponent(
+//                                item = it,
+//                                onClick = { viewModel.onAction(ProductListAction.OnDeviceClick(it.guid)) }
+//                            )
+//                            if (index != state.data.lastIndex) {
+//                                Divider(Modifier.fillMaxWidth().padding(vertical = Dimensions.paddingVerticalXs))
+//                            }
+//                        }
+//                    }
+                    ProductRecyclerListComponent(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f),
+                        items = state.data,
+                        onDetailsClick = onDetailsClick,
+                        onCartButtonClick = { viewModel.onAction(ProductListAction.OnProductShopCartClick(it)) }
+                    )
                     Button(
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { viewModel.onAction(ProductListAction.OnAddProductButtonClick) }

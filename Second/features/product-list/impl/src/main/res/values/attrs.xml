@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ShoppingCartButtonView">
+        <attr name="uiState" format="enum">
+            <enum name="notInCart" value="0" />
+            <enum name="loading" value="1" />
+            <enum name="inCart" value="2" />
+        </attr>
+    </declare-styleable>
+</resources>

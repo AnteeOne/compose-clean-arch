@@ -27,7 +27,7 @@ fun ProductListItemComponent(
         Row {
             AsyncImage(
                 modifier = Modifier.size(64.dp), // TODO: remove hardcode dp values
-                model = image,
+                model = images,
                 contentDescription = null
             )
             Spacer(Modifier.width(Dimensions.spacingHorizontalXs))
@@ -58,7 +58,7 @@ fun ProductListItemPreview() {
         ProductListItemComponent(
             item = ProductListItem(
                 guid = "c3cfe1a8-6eec-4e9f-a260-490e128763f4",
-                image = "https://cdn1.ozone.ru/s3/multimedia-4/6099200308.jpg",
+                images = listOf("https://cdn1.ozone.ru/s3/multimedia-4/6099200308.jpg"),
                 isFavorite = true,
                 isInCart = false,
                 name = "Молоко",

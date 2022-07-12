@@ -38,7 +38,7 @@ object Versions {
     const val compose = "1.1.0-beta04"
     const val composeMaterial = "1.0.0-alpha02"
     const val accompanist = "0.23.1"
-    const val koilCompose = "2.1.0"
+    const val koil = "2.1.0"
 
     const val mockito = "4.0.0"
     const val mockitoKotlin = "2.1.0"
@@ -88,7 +88,11 @@ object Deps {
         const val navigation = "androidx.navigation:navigation-compose:${Versions.androidxNavigation}"
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.androidxLifecycle}"
         const val jUnit = "androidx.compose.ui:ui-test-junit4:${Versions.compose}"
-        const val koil = "io.coil-kt:coil-compose:${Versions.koilCompose}"
+        const val koil = "io.coil-kt:coil-compose:${Versions.koil}"
+    }
+
+    object AndroidView {
+        const val koil = "io.coil-kt:coil:${Versions.koil}"
     }
 
     object Coroutines {

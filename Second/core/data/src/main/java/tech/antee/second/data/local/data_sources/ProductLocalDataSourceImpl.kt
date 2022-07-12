@@ -25,12 +25,14 @@ class ProductLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun putProductsInList(products: List<ProductInListEntity>) {
-        val oldListDiff = (productInListEntities() ?: emptyList()).filter { !products.contains(it) }
+        val oldListDiff = (productInListEntities() ?: emptyList())
+            .filter { old -> !products.any { it.guid == old.guid } }
         sharedPrefs.putList(SharedPrefsConfig.LIST_PRODUCTS_KEY, products + oldListDiff)
     }
 
     override suspend fun putProducts(products: List<ProductEntity>) {
-        val oldListDiff = (productDetailsEntities() ?: emptyList()).filter { !products.contains(it) }
+        val oldListDiff = (productDetailsEntities() ?: emptyList())
+            .filter { old -> !products.any { it.guid == old.guid } }
         sharedPrefs.putList(SharedPrefsConfig.DETAILS_PRODUCTS_KEY, products + oldListDiff)
     }
 
@@ -54,6 +56,13 @@ class ProductLocalDataSourceImpl @Inject constructor(
         }
         sharedPrefs.putList(SharedPrefsConfig.DETAILS_PRODUCTS_KEY, newList)
         return getProductDetails(newEntity.guid)
+    }
+
+    override suspend fun putProductInList(newEntity: ProductInListEntity) {
+        val newList = productInListEntities()?.map { oldEntity ->
+            if (oldEntity.guid == newEntity.guid) newEntity else oldEntity
+        }
+        sharedPrefs.putList(SharedPrefsConfig.LIST_PRODUCTS_KEY, newList)
     }
 
     private fun productInListEntities(): List<ProductInListEntity>? =

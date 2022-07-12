@@ -3,6 +3,7 @@ package tech.antee.second.data.repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import tech.antee.second.data.local.data_sources.ProductLocalDataSource
+import tech.antee.second.data.local.data_sources.ShopCartDataSource
 import tech.antee.second.data.local.mappers.ProductDetailsToListEntityMapper
 import tech.antee.second.data.local.mappers.ProductEntityToModelMapper
 import tech.antee.second.data.local.mappers.ProductListEntityToModelMapper
@@ -17,6 +18,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class ProductRepositoryImpl @Inject constructor(
     private val remoteProductDataSource: ProductRemoteDataSource,
     private val localProductDataSource: ProductLocalDataSource,
+    private val shopCartDataSource: ShopCartDataSource,
     private val productListEntityToModelMapper: ProductListEntityToModelMapper,
     private val productEntityToModelMapper: ProductEntityToModelMapper,
     private val productDetailsToListEntityMapper: ProductDetailsToListEntityMapper,
@@ -44,7 +46,16 @@ class ProductRepositoryImpl @Inject constructor(
 
     override suspend fun fetchProductListLocal(): EmptyOutput {
         return try {
-            _productInListFlow.emit(localProductDataSource.getProductInList().map(productListEntityToModelMapper::map))
+            _productInListFlow.emit(
+                localProductDataSource.getProductInList()
+                    .map(productListEntityToModelMapper::map)
+                    .map { product ->
+                        when {
+                            shopCartDataSource.containsProduct(product.guid) -> product.copy(isInCart = true)
+                            else -> product
+                        }
+                    }
+            )
             EmptySuccess
         } catch (t: Throwable) {
             when (t) {
@@ -69,18 +80,39 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProductDetails(guid: String): Output<Product> {
+    override suspend fun getProductDetails(
+        guid: String,
+        increaseViewCount: Boolean
+    ): Output<Product> {
         return try {
-            val entity = localProductDataSource.getProductDetails(guid)
-            val updatedEntity =
-                localProductDataSource.putProductDetails(entity!!.copy(viewCount = entity.viewCount + 1))
-            Output.Success(productEntityToModelMapper.map(updatedEntity!!)) // TODO: wrap with null check
+            var entity = localProductDataSource.getProductDetails(guid)
+            if (increaseViewCount) {
+                entity = localProductDataSource
+                    .putProductDetails(requireNotNull(entity).copy(viewCount = entity.viewCount + 1))
+            } else {
+                entity = requireNotNull(entity).copy()
+            }
+            var output = productEntityToModelMapper.map(requireNotNull(entity))
+            if (shopCartDataSource.containsProduct(output.guid)) {
+                output = output.copy(inCartItemCount = shopCartDataSource.getProductCountInCart(output.guid))
+            }
+            Output.Success(output)
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t
                 else -> Output.Error(t)
             }
         }
+    }
+
+    override suspend fun putProductToCart(guid: String): Int {
+        shopCartDataSource.addProduct(guid)
+        return shopCartDataSource.getProductCountInCart(guid)
+    }
+
+    override suspend fun removeProductFromCart(guid: String): Int {
+        shopCartDataSource.deleteProduct(guid)
+        return shopCartDataSource.getProductCountInCart(guid)
     }
 
     override suspend fun addProduct(product: Product) {

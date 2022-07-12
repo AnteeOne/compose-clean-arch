@@ -5,6 +5,12 @@ plugins {
     id(Plugins.kotlinKapt)
 }
 
+android {
+    buildFeatures {
+        viewBinding = true
+    }
+}
+
 dependencies {
     projectApi(Modules.featureProductDetailsApi)
 
