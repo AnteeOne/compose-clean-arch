@@ -80,12 +80,23 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getProductDetails(guid: String): Output<Product> {
+    override suspend fun getProductDetails(
+        guid: String,
+        increaseViewCount: Boolean
+    ): Output<Product> {
         return try {
-            val entity = localProductDataSource.getProductDetails(guid)
-            val updatedEntity = localProductDataSource
-                .putProductDetails(requireNotNull(entity).copy(viewCount = entity.viewCount + 1))
-            Output.Success(productEntityToModelMapper.map(requireNotNull(updatedEntity)))
+            var entity = localProductDataSource.getProductDetails(guid)
+            if (increaseViewCount) {
+                entity = localProductDataSource
+                    .putProductDetails(requireNotNull(entity).copy(viewCount = entity.viewCount + 1))
+            } else {
+                entity = requireNotNull(entity).copy()
+            }
+            var output = productEntityToModelMapper.map(requireNotNull(entity))
+            if (shopCartDataSource.containsProduct(output.guid)) {
+                output = output.copy(inCartItemCount = shopCartDataSource.getProductCountInCart(output.guid))
+            }
+            Output.Success(output)
         } catch (t: Throwable) {
             when (t) {
                 is CancellationException -> throw t
@@ -94,9 +105,14 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun putProductToCart(guid: String) {
+    override suspend fun putProductToCart(guid: String): Int {
         shopCartDataSource.addProduct(guid)
-        fetchProductListLocal()
+        return shopCartDataSource.getProductCountInCart(guid)
+    }
+
+    override suspend fun removeProductFromCart(guid: String): Int {
+        shopCartDataSource.deleteProduct(guid)
+        return shopCartDataSource.getProductCountInCart(guid)
     }
 
     override suspend fun addProduct(product: Product) {

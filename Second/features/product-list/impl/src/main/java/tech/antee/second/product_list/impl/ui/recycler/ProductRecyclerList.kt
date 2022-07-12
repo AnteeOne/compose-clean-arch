@@ -26,7 +26,9 @@ fun ProductRecyclerListComponent(
                 adapter = listAdapter
                 layoutManager = listLayoutManager
             }
+        },
+        update = {
+            listAdapter.submitSectionalSortedList(items)
         }
     )
-    listAdapter.submitSectionalSortedList(items) // TODO: check AndroidView Factory method
 }

@@ -17,6 +17,8 @@ data class ProductEntity(
     val isFavorite: Boolean,
     @SerializedName("isInCart")
     val isInCart: Boolean,
+    @SerializedName("InCartItemCount")
+    val inCartItemCount: Int,
     @SerializedName("images")
     val images: List<String>,
     @SerializedName("weight")

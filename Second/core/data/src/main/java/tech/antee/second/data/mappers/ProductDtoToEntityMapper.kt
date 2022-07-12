@@ -14,6 +14,7 @@ class ProductDtoToEntityMapper {
             rating,
             isFavorite,
             isInCart,
+            0,
             images,
             weight,
             count,

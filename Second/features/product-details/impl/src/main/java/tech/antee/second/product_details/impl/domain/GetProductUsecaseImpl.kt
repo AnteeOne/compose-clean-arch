@@ -9,7 +9,7 @@ class GetProductUsecaseImpl @Inject constructor(
     private val productRepository: ProductRepository
 ) : GetProductUsecase {
 
-    override suspend operator fun invoke(guid: String): Output<Product> {
-        return productRepository.getProductDetails(guid)
+    override suspend operator fun invoke(guid: String, increaseViewCount: Boolean): Output<Product> {
+        return productRepository.getProductDetails(guid, increaseViewCount)
     }
 }

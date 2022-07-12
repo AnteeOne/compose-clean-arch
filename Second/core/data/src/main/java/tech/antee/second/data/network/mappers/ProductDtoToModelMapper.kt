@@ -6,6 +6,7 @@ import tech.antee.second.domain.models.Product
 class ProductDtoToModelMapper {
 
     private val DEFAULT_VIEW_COUNT = 0
+    private val DEFAULT_IN_CART_COUNT = 0
 
     fun map(from: ProductDto): Product = with(from) {
         Product(
@@ -16,6 +17,7 @@ class ProductDtoToModelMapper {
             rating,
             isFavorite,
             isInCart,
+            DEFAULT_IN_CART_COUNT,
             images,
             weight,
             count,
