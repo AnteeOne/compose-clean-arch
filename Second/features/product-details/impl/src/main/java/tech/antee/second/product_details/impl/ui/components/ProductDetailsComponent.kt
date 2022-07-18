@@ -1,16 +1,19 @@
 package tech.antee.second.product_details.impl.ui.components
 
-import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.AsyncImage
@@ -26,54 +29,94 @@ fun ProductDetailsComponent(
     onRemoveFromCartClick: () -> Unit,
     modifier: Modifier = Modifier
 ) = with(productItem) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
+    Box(modifier = modifier.fillMaxSize()) {
+        var imageHeight by remember {
+            mutableStateOf(0.dp)
+        }
+        val localDensity = LocalDensity.current
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .align(Alignment.TopCenter)
+                .onGloballyPositioned {
+                    imageHeight = with(localDensity) { it.size.height.toDp() }
+                }
+        ) {
             images.firstOrNull()?.let { imageUrl ->
                 AsyncImage(
-                    modifier = Modifier.height(ProductDetailsComponentDefaults.imageSize),
+                    modifier = Modifier.fillMaxSize(),
                     model = imageUrl, // TODO(fix): add view pager contains another images
                     contentDescription = null
                 )
             }
-            Spacer(Modifier.height(Dimensions.spacingVerticalXs))
-            val productDetails =
-                mutableListOf(name, description, "viewCount = $viewCount", "price = $price", "rating = $rating").apply {
-                    if (isFavorite) add("In favs")
-                    if (isInCart) add("InCart") // TODO: to string resourses OR LocalStringsModule with translation (Technocracy Habr Presentation)
-                    weight?.let { add("weight = $it") }
-                    count?.let { add("count = $it") }
-                    additionalParams.forEach {
-                        add("${it.key} = ${it.value}")
-                    }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.5f)),
+                            startY = 500f
+                        )
+                    )
+            )
+        }
+        Card(
+            modifier = Modifier
+                .height(imageHeight + 24.dp)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+            elevation = 4.dp,
+            shape = RoundedCornerShape(topStart = Dimensions.cornersM, topEnd = Dimensions.cornersM),
+            backgroundColor = Color.White
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = Dimensions.paddingHorizontalM,
+                        end = Dimensions.paddingHorizontalM,
+                        bottom = Dimensions.paddingVerticalXxl
+                    )
+                    .absoluteOffset(y = ProductDetailsComponentDefaults.cardOffset)
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Spacer(Modifier.height(Dimensions.spacingVerticalXs))
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold)
+                    )
+                    Spacer(Modifier.height(Dimensions.spacingVerticalXs))
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
                 }
-            LazyColumn {
-                itemsIndexed(productDetails) { index, text ->
-                    Text(text)
-                    if (index != productDetails.lastIndex) Spacer(Modifier.height(Dimensions.spacingVerticalXs))
+                Column(horizontalAlignment = Alignment.CenterHorizontally){
+                    Text(
+                        text = "$price₽",
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                    AndroidView(
+                        modifier = Modifier.fillMaxWidth(),
+                        factory = { ShopCartButtonExtView(it) },
+                        update = {
+                            it.setInCartCount(productItem.inCartItemCount)
+                            it.setOnClickListener { type ->
+                                when (type) {
+                                    ShopCartBtnClickType.OnAdd -> onAddToCartClick()
+                                    ShopCartBtnClickType.OnRemove -> onRemoveFromCartClick()
+                                }
+                            }
+                        }
+                    )
                 }
             }
         }
-        AndroidView(
-            modifier = Modifier.fillMaxWidth(),
-            factory = {
-                ShopCartButtonExtView(it)
-            },
-            update = {
-                it.setInCartCount(productItem.inCartItemCount)
-                it.setOnClickListener { type ->
-                    when (type) {
-                        ShopCartBtnClickType.OnAdd -> onAddToCartClick()
-                        ShopCartBtnClickType.OnRemove -> onRemoveFromCartClick()
-                    }
-                }
-            }
-        )
     }
 }
 
 private object ProductDetailsComponentDefaults {
     val imageSize = 320.dp
+    val cardOffset = 24.dp
 }

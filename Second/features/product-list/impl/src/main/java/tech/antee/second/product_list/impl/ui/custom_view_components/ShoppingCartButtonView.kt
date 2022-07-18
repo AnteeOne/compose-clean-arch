@@ -16,7 +16,7 @@ class ShoppingCartButtonView @JvmOverloads constructor(
 
     private val rect: RectF = RectF(0f, 0f, 0f, 0f)
 
-    private var bgColor: Int = Color.BLUE
+    private var bgColor: Int = Color.BLACK
     private var bgInCartColor: Int = Color.GREEN
     private var textColor: Int = Color.WHITE
 
@@ -50,12 +50,14 @@ class ShoppingCartButtonView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        isFocused
         with(paint) {
-            color = when (state) {
+            color = when(state)  {
                 InCart -> bgInCartColor
                 else -> bgColor
+
             }
-            canvas.drawRect(rect, paint)
+            canvas.drawRoundRect(rect,8f,8f, paint)
 
             when (state) {
                 NotInCart -> canvas.drawTextInBtn("Add to cart")

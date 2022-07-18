@@ -1,8 +1,11 @@
 package tech.antee.second.product_adding.impl.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.TextField
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,16 +31,20 @@ fun ProductAddingScreen(
     }
 
     Box(
-        modifier = modifier.fillMaxSize().padding(
-            horizontal = Dimensions.paddingHorizontalM,
-            vertical = Dimensions.paddingVerticalM
-        )
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = Dimensions.paddingHorizontalM,
+                vertical = Dimensions.paddingVerticalM
+            )
     ) {
         // TODO: clean + refactor
         // TODO: add validation
         Column(modifier = Modifier.fillMaxSize()) {
             Column(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TextField(
@@ -84,6 +91,8 @@ fun ProductAddingScreen(
             }
             Button(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(Dimensions.cornersXs),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surfaceVariant),
                 onClick = { viewModel.onAction(ProductAddingAction.OnProductAddingButtonClick) }
             ) {
                 Text(text = "Add product", color = Color.White) // TODO: to strings

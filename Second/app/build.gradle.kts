@@ -5,14 +5,6 @@ plugins {
     id(Plugins.kotlinKapt)
 }
 
-android {
-    defaultConfig {
-        applicationId = AppConfig.applicationId
-        versionCode = AppConfig.versionCode
-        versionName = AppConfig.versionName
-    }
-}
-
 dependencies {
     projectImplementation(Modules.utilsTheme)
     projectImplementation(Modules.coreDomain)

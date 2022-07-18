@@ -3,8 +3,11 @@ package tech.antee.second.product_list.impl.ui
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -87,6 +90,8 @@ fun ProductListScreen(
                     )
                     Button(
                         modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(Dimensions.cornersXs),
+                        colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.surfaceVariant),
                         onClick = { viewModel.onAction(ProductListAction.OnAddProductButtonClick) }
                     ) {
                         Text(text = "Add product", color = Color.White) // TODO: to strings
