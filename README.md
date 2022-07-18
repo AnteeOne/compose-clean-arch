@@ -1,2 +1,2 @@
-# homework-2
+# Compose Clean Arch App
 
