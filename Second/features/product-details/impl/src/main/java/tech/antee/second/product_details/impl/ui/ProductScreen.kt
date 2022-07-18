@@ -39,12 +39,7 @@ fun ProductScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(
-                horizontal = Dimensions.paddingHorizontalM,
-                vertical = Dimensions.paddingVerticalM
-            )
+        modifier = modifier.fillMaxSize()
     ) {
         when (val state = uiState) {
             is ProductUiState.Empty -> {}
